@@ -1,23 +1,13 @@
 import os
-
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from supabase import create_client, Client
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+url = os.getenv("SUPABASE_URL")
+key = os.getenv("SUPABASE_KEY")
 
-if not DATABASE_URL:
-    raise RuntimeError("DATABASE_URL não foi definida no arquivo .env")
+if not url or not key:
+    raise RuntimeError("SUPABASE_URL ou SUPABASE_KEY não foram definidas no .env")
 
-engine = create_engine(DATABASE_URL)
-
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
-
-Base = declarative_base()
-
+supabase: Client = create_client(url, key)
